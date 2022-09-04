@@ -31,7 +31,7 @@ public class Q31_NextPointer {
         public Node right;
         public Node next;
 
-        public TreeNode(int value) {
+        public Node(int value) {
             this.value = value;
         }
     }
