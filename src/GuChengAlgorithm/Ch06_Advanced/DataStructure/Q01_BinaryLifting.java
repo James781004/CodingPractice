@@ -1,4 +1,4 @@
-package GuChengAlgorithm.ch06_Advanced.DataStructure;
+package GuChengAlgorithm.Ch06_Advanced.DataStructure;
 
 import java.util.ArrayList;
 import java.util.HashMap;

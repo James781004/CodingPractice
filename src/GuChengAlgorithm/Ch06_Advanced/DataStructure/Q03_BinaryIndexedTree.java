@@ -1,4 +1,4 @@
-package GuChengAlgorithm.ch06_Advanced.DataStructure;
+package GuChengAlgorithm.Ch06_Advanced.DataStructure;
 
 public class Q03_BinaryIndexedTree {
     class BITBasic {

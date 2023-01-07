@@ -1,4 +1,4 @@
-package GuChengAlgorithm.ch06_Advanced.Algorithm;
+package GuChengAlgorithm.Ch06_Advanced.Algorithm;
 
 import java.util.*;
 

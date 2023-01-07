@@ -1,4 +1,4 @@
-package GuChengAlgorithm.ch06_Advanced.Algorithm;
+package GuChengAlgorithm.Ch06_Advanced.Algorithm;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -39,7 +39,7 @@ public class Q01_RollingHash {
             for (int i = 1; i <= L; i++) {
                 aL = (aL * a + nums[i]) % MOD;  // aL = 4 * a
             }
-            
+
             Set<Long> seen = new HashSet<>(Arrays.asList(h));
 
             for (int start = 1; start < n - L + 1; start++) {

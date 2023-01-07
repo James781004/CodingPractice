@@ -1,4 +1,4 @@
-package GuChengAlgorithm.ch05_DP;
+package GuChengAlgorithm.Ch05_DP;
 
 public class Q03_DoubleArrays {
     // DP常規4步走

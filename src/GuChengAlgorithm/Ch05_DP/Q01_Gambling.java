@@ -1,4 +1,4 @@
-package GuChengAlgorithm.ch05_DP;
+package GuChengAlgorithm.Ch05_DP;
 
 public class Q01_Gambling {
     // dfs+memo 或者dp iterative寫法都可以解答，dfs方式比較適合這類型

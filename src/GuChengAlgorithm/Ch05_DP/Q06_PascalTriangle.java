@@ -1,4 +1,4 @@
-package GuChengAlgorithm.ch05_DP;
+package GuChengAlgorithm.Ch05_DP;
 
 import java.util.ArrayList;
 import java.util.Arrays;
