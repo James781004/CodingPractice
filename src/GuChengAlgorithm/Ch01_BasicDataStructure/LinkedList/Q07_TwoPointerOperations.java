@@ -226,7 +226,7 @@ public class Q07_TwoPointerOperations {
         DoubleListNode[] right = flatten(root.right);
 
         // 處理左右子樹資料
-        DoubleListNode pre = null, next = null;
+        DoubleListNode pre = root, next = root;
 
         // 目前root是中間節點，左子樹右節點跟root連接
         if (left[1] != null) {
