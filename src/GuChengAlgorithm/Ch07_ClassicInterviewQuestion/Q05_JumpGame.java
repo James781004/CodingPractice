@@ -279,7 +279,7 @@ public class Q05_JumpGame {
         }
     }
 
-    // hhttps://docs.google.com/presentation/d/1HuFIst_Q09J5jack9kBRMh-sq2059by9mBLWQuXF4ng/edit#slide=id.ge224544fc6_0_57
+    // https://docs.google.com/presentation/d/1HuFIst_Q09J5jack9kBRMh-sq2059by9mBLWQuXF4ng/edit#slide=id.ge224544fc6_0_57
     class FrogJump {
         int[][] memo;
 
