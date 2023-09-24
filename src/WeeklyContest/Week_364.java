@@ -60,8 +60,9 @@ public class Week_364 {
         return ans;
     }
 
-    // https://leetcode.cn/problems/beautiful-towers-i/solutions/2456565/on-qian-hou-zhui-fen-jie-dan-diao-zhan-p-w3g0/
-    public long maximumSumOfHeights(List<Integer> maxHeights) {
+
+    // https://leetcode.cn/problems/beautiful-towers-ii/solutions/2456562/qian-hou-zhui-fen-jie-dan-diao-zhan-pyth-1exe/
+    public long maximumSumOfHeightsII(List<Integer> maxHeights) {
         int[] a = maxHeights.stream().mapToInt(i -> i).toArray();
         int n = a.length;
         long[] suf = new long[n + 1];
@@ -93,44 +94,6 @@ public class Week_364 {
             int x = a[i];
             // st.size() > 1 才算是非空，因為要要保留哨兵，避免empty的狀況
             // 單調棧，元素值從棧底到棧頂嚴格遞增，因為目標是求 x 往左看遞減前綴
-            while (st.size() > 1 && x <= a[st.peek()]) {
-                int j = st.pop();
-                pre -= (long) a[j] * (j - st.peek()); // 撤銷之前加到 pre 中的
-            }
-            pre += (long) x * (i - st.peek()); // 從 st.peek()+1 到 i 都是 x
-            ans = Math.max(ans, pre + suf[i + 1]);
-            st.push(i);
-        }
-        return ans;
-    }
-
-
-    // https://leetcode.cn/problems/beautiful-towers-ii/solutions/2456562/qian-hou-zhui-fen-jie-dan-diao-zhan-pyth-1exe/
-    // 跟上面解法相同
-    public long maximumSumOfHeightsII(List<Integer> maxHeights) {
-        int[] a = maxHeights.stream().mapToInt(i -> i).toArray();
-        int n = a.length;
-        long[] suf = new long[n + 1];
-        Deque<Integer> st = new ArrayDeque<Integer>();
-        st.push(n); // 哨兵
-        long sum = 0;
-        for (int i = n - 1; i >= 0; i--) {
-            int x = a[i];
-            while (st.size() > 1 && x <= a[st.peek()]) {
-                int j = st.pop();
-                sum -= (long) a[j] * (st.peek() - j); // 撤銷之前加到 sum 中的
-            }
-            sum += (long) x * (st.peek() - i); // 從 i 到 st.peek()-1 都是 x
-            suf[i] = sum;
-            st.push(i);
-        }
-
-        long ans = sum;
-        st.clear();
-        st.push(-1); // 哨兵
-        long pre = 0;
-        for (int i = 0; i < n; i++) {
-            int x = a[i];
             while (st.size() > 1 && x <= a[st.peek()]) {
                 int j = st.pop();
                 pre -= (long) a[j] * (j - st.peek()); // 撤銷之前加到 pre 中的
