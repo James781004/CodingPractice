@@ -1,6 +1,7 @@
 package WeeklyContest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,50 +41,40 @@ public class Week_366 {
 
     // https://leetcode.cn/problems/apply-operations-to-make-two-strings-equal/solutions/2472122/ji-yi-hua-sou-suo-by-endlesscheng-64vq/
     public int minOperations(String s1, String s2, int x) {
-        if (countOnes(s1) % 2 != countOnes(s2) % 2) {
+        char[] s = s1.toCharArray(), t = s2.toCharArray();
+        int n = s.length, diff = 0;
+        for (int i = 0; i < n; i++) {
+            if (s[i] != t[i]) {
+                diff ^= 1;
+            }
+        }
+        if (diff > 0) {
             return -1;
         }
-        int n = s1.length();
         int[][][] memo = new int[n][n + 1][2];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j <= n; j++) {
-                memo[i][j][0] = -1;
-                memo[i][j][1] = -1;
+                Arrays.fill(memo[i][j], -1);// -1 表示沒有計算過
             }
         }
-        return dfs(n - 1, 0, 0, s1, s2, x, memo);
+        return dfs(n - 1, 0, 0, memo, s, t, x);
     }
 
-    private int dfs(int i, int j, int preRev, String s1, String s2, int x, int[][][] memo) {
-        if (i < 0) {
-            if (j > 0 || preRev > 0) {
-                return 1_000_000_000;
-            }
-            return 0;
+    private int dfs(int i, int j, int preRev, int[][][] memo, char[] s, char[] t, int x) {
+        if (i < 0) { // 遞歸邊界
+            return j > 0 || preRev > 0 ? Integer.MAX_VALUE / 2 : 0;
         }
-        if (memo[i][j][preRev] != -1) {
+        if (memo[i][j][preRev] != -1) { // 之前計算過
             return memo[i][j][preRev];
         }
-        if (s1.charAt(i) == s2.charAt(i) && preRev == 0) {
-            return dfs(i - 1, j, 0, s1, s2, x, memo);
+        if ((s[i] == t[i]) == (preRev == 0)) { // 無需反轉
+            return dfs(i - 1, j, 0, memo, s, t, x);
         }
-        int res = dfs(i - 1, j + 1, 0, s1, s2, x, memo) + x;
-        res = Math.min(res, dfs(i - 1, j, 1, s1, s2, x, memo) + 1);
-        if (j > 0) {
-            res = Math.min(res, dfs(i - 1, j - 1, 0, s1, s2, x, memo));
+        int res = Math.min(dfs(i - 1, j + 1, 0, memo, s, t, x) + x, dfs(i - 1, j, 1, memo, s, t, x) + 1);
+        if (j > 0) { // 可以免費反轉
+            res = Math.min(res, dfs(i - 1, j - 1, 0, memo, s, t, x));
         }
-        memo[i][j][preRev] = res;
-        return res;
-    }
-
-    private int countOnes(String s) {
-        int count = 0;
-        for (char c : s.toCharArray()) {
-            if (c == '1') {
-                count++;
-            }
-        }
-        return count;
+        return memo[i][j][preRev] = res; // 記憶化
     }
 
 
