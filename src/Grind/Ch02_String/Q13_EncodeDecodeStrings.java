@@ -1,5 +1,6 @@
 package Grind.Ch02_String;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -63,6 +64,36 @@ public class Q13_EncodeDecodeStrings {
         }
 
         return result;
+    }
+
+
+    // https://blog.51cto.com/u_15069482/3871744
+    public class Codec {
+        // Encodes a list of strings to a single string.
+        public String encode(List<String> strs) {
+            StringBuilder sb = new StringBuilder();
+            for (String str : strs) {
+                sb.append(str.length() + "/" + str);
+            }
+
+            return sb.toString();
+        }
+
+        // Decodes a single string to a list of strings.
+        public List<String> decode(String s) {
+            List<String> res = new ArrayList<>();
+            int index = 0;
+
+            while (index < s.length()) {
+                int sep = s.indexOf("/", index);
+                int len = Integer.valueOf(s.substring(index, sep));
+                String curr = s.substring(sep + 1, sep + 1 + len);
+                res.add(curr);
+                index = sep + 1 + len;
+            }
+
+            return res;
+        }
     }
 
 }
