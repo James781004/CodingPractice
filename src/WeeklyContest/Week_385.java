@@ -94,9 +94,10 @@ public class Week_385 {
         return ans;
     }
 
+    static class Node {
+        Map<Integer, Node> son = new HashMap<>();
+        int cnt;
+    }
 }
 
-class Node {
-    Map<Integer, Node> son = new HashMap<>();
-    int cnt;
-}
+
