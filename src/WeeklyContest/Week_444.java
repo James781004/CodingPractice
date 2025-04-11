@@ -13,7 +13,6 @@ public class Week_444 {
         while (!isNonDecreasing(nums)) {
             count += 1;
             nums = getMerge(nums);
-            // System.out.println(Arrays.toString(nums));
         }
         return count;
     }
