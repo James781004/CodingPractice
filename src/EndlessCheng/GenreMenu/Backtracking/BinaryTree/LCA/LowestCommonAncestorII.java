@@ -1,0 +1,20 @@
+package EndlessCheng.GenreMenu.Backtracking.BinaryTree.LCA;
+
+import EndlessCheng.TreeNode;
+
+public class LowestCommonAncestorII {
+
+    // https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/solutions/2023872/fen-lei-tao-lun-luan-ru-ma-yi-ge-shi-pin-2r95/
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == p || root == q) {
+            return root;
+        }
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        if (left != null && right != null) { // 左右都找到
+            return root; // 當前節點是最近公共祖先
+        }
+        return left != null ? left : right;
+    }
+
+}
