@@ -1,0 +1,150 @@
+package WeeklyContest;
+
+import java.util.*;
+
+public class Week_505 {
+
+    // https://leetcode.cn/problems/sum-of-compatible-numbers-in-range-i/solutions/3980541/liang-chong-fang-fa-bao-li-mei-ju-shu-we-one9/
+    public int sumOfGoodIntegers(int n, int k) {
+        int low = Math.max(n - k, 1);
+        int high = n + k;
+        int m = 32 - Integer.numberOfLeadingZeros(high);
+        int[][] memo = new int[m][];
+        return dfs(m - 1, true, true, low, high, n, memo)[1];
+    }
+
+    // dfs 返回兩個數：子樹合法二進制數個數，子樹和
+    private int[] dfs(int i, boolean limitLow, boolean limitHigh, int low, int high, int n, int[][] memo) {
+        if (i < 0) {
+            return new int[]{1, 0}; // 如果沒有特殊約束，那麼能遞歸到終點的都是合法二進制數
+        }
+
+        if (!limitLow && !limitHigh && memo[i] != null) {
+            return memo[i];
+        }
+
+        int lo = limitLow ? low >> i & 1 : 0;
+        int hi = limitHigh ? high >> i & 1 : 1;
+
+        int cnt = 0;
+        int sum = 0;
+
+        for (int d = lo; d <= hi; d++) {
+            int bit = d << i;
+            if ((n & bit) > 0) { // 不滿足要求
+                continue;
+            }
+            int[] sub = dfs(i - 1, limitLow && d == lo, limitHigh && d == hi, low, high, n, memo);
+            cnt += sub[0]; // 累加子樹的合法二進制數個數
+            sum += sub[1]; // 累加子樹和
+            sum += bit * sub[0]; // bit 會出現在 sub[0] 個數中（貢獻法）
+        }
+
+        int[] res = new int[]{cnt, sum};
+        if (!limitLow && !limitHigh) {
+            memo[i] = res;
+        }
+        return res;
+    }
+
+
+    // https://leetcode.cn/problems/valid-binary-strings-with-cost-limit/solutions/3980522/yu-chu-li-mei-ge-shu-de-cheng-ben-python-u4et/
+    class Solution {
+        private static final int[] cost = new int[1 << 12];
+        private static boolean initialized = false;
+
+        // 這樣寫比 static block 快
+        public Solution() {
+            if (initialized) {
+                return;
+            }
+            initialized = true;
+
+            for (int x = 1; x < cost.length; x++) {
+                if ((x & (x >> 1)) > 0) { // 有兩個連續的 1
+                    cost[x] = Integer.MAX_VALUE; // 不滿足要求
+                } else {
+                    // 去掉 x 中的一個比特位（最低位還是最高位都可以），計算 DP
+                    cost[x] = cost[x & (x - 1)] + Integer.numberOfTrailingZeros(x);
+                }
+            }
+        }
+
+        public List<String> generateValidStrings(int n, int k) {
+            List<String> ans = new ArrayList<>();
+            char[] s = new char[n];
+            for (int x = 0; x < (1 << n); x++) {
+                if (cost[x] > k) {
+                    continue;
+                }
+                int y = x;
+                for (int j = 0; j < n; j++) { // 注意左邊是低位，右邊是高位
+                    s[j] = (char) ('0' + (y & 1));
+                    y >>= 1;
+                }
+                ans.add(new String(s));
+            }
+            return ans;
+        }
+    }
+
+
+    // https://leetcode.cn/problems/maximum-sum-of-m-non-overlapping-subarrays-i/solutions/3980513/dan-diao-dui-lie-you-hua-dppythonjavacgo-lpex/
+    public long maximumSum(int[] nums, int m, int left, int right) {
+        int n = nums.length;
+        long[] s = new long[n + 1]; // nums 的前綴和
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = s[i] + nums[i];
+        }
+
+        // f[i][j] 表示在前 j 個數（下標 0 到 j-1）中選出恰好 i 個子數組，所選元素之和的最大值
+        long[][] f = new long[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            Arrays.fill(f[i], Long.MIN_VALUE / 2); // 防止溢出
+        }
+        long ans = Long.MIN_VALUE;
+
+        for (int i = 1; i <= m; i++) {
+            Deque<Integer> q = new ArrayDeque<>();
+
+            // 前 i 個子數組至少佔用了 i * left 個位置
+            for (int j = i * left; j <= n; j++) {
+                // 1. 入
+                int k = j - left;
+                long v = f[i - 1][k] - s[k];
+                while (!q.isEmpty() && f[i - 1][q.peekLast()] - s[q.peekLast()] <= v) {
+                    q.pollLast();
+                }
+                q.offerLast(k);
+
+                // 2. 更新
+                // 不選 nums[j-1] vs 選一個以 j-1 結尾的子數組
+                f[i][j] = Math.max(f[i][j - 1], f[i - 1][q.peekFirst()] - s[q.peekFirst()] + s[j]);
+
+                // 3. 出，下一輪循環隊首離開窗口
+                if (q.peekFirst() <= j - right) {
+                    q.pollFirst();
+                }
+            }
+
+            // 枚舉恰好選 i 個子數組
+            ans = Math.max(ans, f[i][n]);
+        }
+
+        return ans;
+    }
+
+
+    // https://leetcode.cn/problems/maximum-sum-of-m-non-overlapping-subarrays-ii/solutions/
+
+}
+
+
+
+
+
+
+
+
+
+
