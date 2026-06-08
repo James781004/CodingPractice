@@ -135,7 +135,84 @@ public class Week_505 {
     }
 
 
-    // https://leetcode.cn/problems/maximum-sum-of-m-non-overlapping-subarrays-ii/solutions/
+    // https://leetcode.cn/problems/maximum-sum-of-m-non-overlapping-subarrays-ii/solutions/3980778/la-ge-lang-ri-song-chi-wqs-er-fen-python-m2iw/
+    // DP 值, 子數組個數
+    private record Pair(long f, int cnt) {
+    }
+
+    // 相等的時候，子數組個數更大的劣
+    private boolean less(Pair a, Pair b) {
+        return a.f < b.f || a.f == b.f && a.cnt > b.cnt;
+    }
+
+    public long maximumSumII(int[] nums, int m, int l, int r) {
+        int n = nums.length;
+        long[] s = new long[n + 1]; // nums 的前綴和
+        long posSum = 0; // nums 中的正數之和
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = s[i] + nums[i];
+            if (nums[i] > 0) {
+                posSum += nums[i];
+            }
+        }
+
+        Pair res0 = dpWithoutLimit(0, n, l, r, s);
+        if (res0.cnt <= m) { // 直接滿足題目要求
+            return res0.f;
+        }
+
+        // 現在專注於解決「選恰好 m 個子數組」的問題
+        long ans = 0;
+        long left = 0;
+        long right = posSum + 1;
+        while (left + 1 < right) {
+            long k = left + (right - left) / 2;
+            Pair res = dpWithoutLimit(k, n, l, r, s);
+            if (res.cnt <= m) {
+                ans = res.f + m * k; // 不需要取 max，二分最終會縮小到凸函數中的 x=m 所在的那條線段
+                right = k;
+            } else {
+                left = k;
+            }
+        }
+        return ans;
+    }
+
+    // 沒有 m 約束，但每選一個子數組就要把元素和減少 k
+    private Pair dpWithoutLimit(long k, int n, int l, int r, long[] s) {
+        Pair[] f = new Pair[n + 1];
+        Arrays.fill(f, 0, l, new Pair(0, 0));
+        Deque<Integer> q = new ArrayDeque<>();
+        Pair res = new Pair(Long.MIN_VALUE, 0);
+
+        for (int i = l; i <= n; i++) {
+            // 1. 入
+            int j = i - l;
+            Pair v = new Pair(f[j].f - s[j], f[j].cnt);
+            while (!q.isEmpty() && less(new Pair(f[q.peekLast()].f - s[q.peekLast()], f[q.peekLast()].cnt), v)) {
+                q.pollLast();
+            }
+            q.addLast(j);
+
+            // 2. 更新答案
+            j = q.peekFirst();
+            Pair choose = new Pair(f[j].f - s[j] + s[i] - k, f[j].cnt + 1);
+            if (less(res, choose)) {
+                // choose 保證我們至少選了一個子數組
+                res = choose;
+            }
+
+            // 更新 DP
+            f[i] = less(f[i - 1], choose) ? choose : f[i - 1];
+
+            // 3. 出，下一輪循環隊首離開窗口
+            if (j <= i - r) {
+                q.pollFirst();
+            }
+        }
+
+        return res;
+    }
 
 }
 
