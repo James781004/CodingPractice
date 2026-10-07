@@ -1,0 +1,68 @@
+package EndlessCheng.GenreMenu.DP.Enhance.Trie;
+
+import java.util.List;
+
+public class WordBreak {
+
+    // https://leetcode.cn/problems/word-break/solutions/1218605/java-1ms-xun-xu-jian-jin-cong-cuo-wu-cha-umpv/
+    public boolean wordBreak(String s, List<String> wordDict) {
+        Trie trie = new Trie();
+
+        for (String word : wordDict)
+            trie.insert(word.toCharArray());
+
+        return trie.find(s, 0);
+    }
+
+    static class TrieNode {
+        public char data;
+        public TrieNode[] children = new TrieNode[26];
+        public boolean isEndingChar = false;
+
+        public TrieNode(char data) {
+            this.data = data;
+        }
+    }
+
+    static class Trie {
+        private TrieNode root = new TrieNode('/');
+        boolean[] failed = new boolean[301]; // s.length <= 300
+
+        public void insert(char[] text) {
+            TrieNode p = root;
+            for (int i = 0; i < text.length; ++i) {
+                int index = text[i] - 'a';
+                if (p.children[index] == null) {
+                    TrieNode newNode = new TrieNode(text[i]);
+                    p.children[index] = newNode;
+                }
+                p = p.children[index];
+            }
+            p.isEndingChar = true;
+        }
+
+        public boolean find(String s, int i) {
+            if (failed[i])
+                return false;
+
+            if (i >= s.length())
+                return true;
+            TrieNode p = root;
+            for (; i < s.length(); i++) {
+                int index = s.charAt(i) - 'a';
+                if (p.children[index] == null) {
+                    return false;
+                }
+                p = p.children[index];
+                if (p.isEndingChar) {
+                    if (find(s, i + 1))
+                        return true;
+                    failed[i + 1] = true;
+                }
+            }
+            return false;
+        }
+    }
+
+
+}
